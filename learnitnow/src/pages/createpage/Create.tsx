@@ -85,19 +85,12 @@ function Create() {
                 </Paper>
 
                 {/* Course Curriculum */}
-                <Paper
-                    elevation={3}
-                    sx={{
-                        p: 3,
-                        borderRadius: 2,
-                        width: "100%",
-                    }}
-                >
-                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-                        Course Curriculum
+                <Paper elevation={3} sx={{ p: 2 , borderRadius: 2, mb: 3 }}>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
+                        Course Details
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>
-                        Structure your course by adding modules and lessons.
+                        Provide the essential information about your course.
                     </Typography>
 
                     {modules.length === 0 && (
@@ -111,7 +104,7 @@ function Create() {
                                 backgroundColor: "#fff",
                             }}
                         >
-                            Your curriculum is empty. Start by adding a module.
+                            Your curriculum is empty. Start by adding a lesson.
                         </Box>
                     )}
 
