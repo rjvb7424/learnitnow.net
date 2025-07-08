@@ -1,7 +1,7 @@
 // Internal dependencies
 import { Box, Grid } from '@mui/material'
 import CourseCard from './components/CourseCard'
-import CustomAppBar from './components/CustomAppbar'
+import CustomAppBar from '../../components/CustomAppbar'
 
 function Home() {
   return (

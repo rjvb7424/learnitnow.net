@@ -1,11 +1,15 @@
 // external dependencies
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
+import CustomAppBar from "../../components/CustomAppbar";
 
 function Create() {
     return(
-        <Typography>
-            Create a Course
-        </Typography>
+        <Box>
+            <CustomAppBar />
+            <Typography>
+                Create a Course
+            </Typography>
+        </Box>
     )
 }
 
