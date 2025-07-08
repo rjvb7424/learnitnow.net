@@ -12,8 +12,10 @@ import {
 import CustomAppBar from "../../components/CustomAppbar";
 
 function Create() {
+    // State management for course details
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    
     type Module = { type: string; title: string; content: string };
     const [modules, setModules] = useState<Module[]>([]);
     const [newModuleType, setNewModuleType] = useState("Paragraph");
@@ -33,7 +35,7 @@ function Create() {
     };
 
     return (
-        <Box sx={{ backgroundColor: "#fefce8", minHeight: "100vh" }}>
+        <Box>
             {/* Custom AppBar */}
             <CustomAppBar />
             <Toolbar />
@@ -43,26 +45,19 @@ function Create() {
                 {/* Header */}
                 <Box>
                     <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
-                        📕 Course Builder
+                        Create Your Course!
                     </Typography>
-                    <Typography variant="subtitle1">
-                        Craft your next masterpiece. Fill in the details to get started.
+                    <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                        Share your knowledge and expertise with the world. Start building your course now!
                     </Typography>
                 </Box>
 
                 {/* Course Details */}
-                <Paper
-                    elevation={3}
-                    sx={{
-                        p: 3,
-                        borderRadius: 2,
-                        width: "100%",
-                    }}
-                >
-                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+                <Paper elevation={3} sx={{ p: 2 , borderRadius: 2, }}>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
                         Course Details
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
                         Provide the essential information about your course.
                     </Typography>
                     <TextField
@@ -73,7 +68,7 @@ function Create() {
                         value={title}
                         onChange={(e) => setTitle(e.target.value.slice(0, 50))}
                         helperText={`${title.length}/50 characters`}
-                        sx={{ mb: 3 }}
+                        sx={{ mb: 1 }}
                     />
                     <TextField
                         variant="outlined"
@@ -85,11 +80,8 @@ function Create() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value.slice(0, 200))}
                         helperText={`${description.length}/200 characters`}
-                        sx={{ mb: 3 }}
+                        sx={{ mb: 1 }}
                     />
-                    <Button variant="outlined" color="primary">
-                        Suggest Subjects
-                    </Button>
                 </Paper>
 
                 {/* Course Curriculum */}
