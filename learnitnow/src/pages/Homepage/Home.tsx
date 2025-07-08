@@ -1,11 +1,10 @@
-import { Typography } from '@mui/material'
+// Internal dependencies
+import CustomAppBar from './components/CustomAppbar'
 
 function Home() {
 
   return (
-    <Typography>
-        Hello World!
-    </Typography>
+    <CustomAppBar/>
   )
 }
 
