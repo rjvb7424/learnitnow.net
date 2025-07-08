@@ -1,25 +1,33 @@
 // external dependencies
-import { AppBar, Divider, IconButton, Toolbar, Typography } from "@mui/material";
-
-// icon dependencies
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { AppBar, Button, Toolbar, Typography, Box } from "@mui/material";
 
 function CustomAppBar() {
     return (
-        <AppBar>
-            <Toolbar>
-                <Typography>
-                    Learn It Now
-                </Typography>
+        <AppBar sx={{ backgroundColor: "transparent", boxShadow: "none", }}>
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+                
+                {/* Left side */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    <Typography variant="h6">
+                        Learn It Now
+                    </Typography>
+                    <Button variant="contained" color="primary">
+                        Courses
+                    </Button>
+                </Box>
 
-                <Divider/>
-
-                <IconButton>
-                    <AccountCircleIcon />
-                </IconButton>
+                {/* Right side */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    <Button variant="contained" color="primary">
+                        Create
+                    </Button>
+                    <Button variant="contained" color="primary">
+                        Get Started!
+                    </Button>
+                </Box>
             </Toolbar>
         </AppBar>
-    )
+    );
 }
 
 export default CustomAppBar;
