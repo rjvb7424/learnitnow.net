@@ -1,5 +1,5 @@
 // Internal dependencies
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, Toolbar } from '@mui/material'
 import CourseCard from './components/CourseCard'
 import CustomAppBar from '../../components/CustomAppbar'
 
@@ -7,6 +7,7 @@ function Home() {
   return (
     <Box>
       <CustomAppBar />
+      <Toolbar />
 
       {/* Grid Container */}
       <Box sx={{ p: 3 }}>

@@ -7,6 +7,7 @@ import {
     MenuItem,
     Paper,
     Container,
+    Toolbar,
 } from "@mui/material";
 import CustomAppBar from "../../components/CustomAppbar";
 
@@ -35,17 +36,10 @@ function Create() {
         <Box sx={{ backgroundColor: "#fefce8", minHeight: "100vh" }}>
             {/* Custom AppBar */}
             <CustomAppBar />
+            <Toolbar />
 
             {/* Main Content */}
-            <Container
-                maxWidth="lg"
-                sx={{
-                    mt: 8, // push content below AppBar
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                }}
-            >
+            <Container>
                 {/* Header */}
                 <Box>
                     <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>

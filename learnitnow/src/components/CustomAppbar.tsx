@@ -10,7 +10,7 @@ function CustomAppBar() {
                 
                 {/* Left side */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <Typography variant="h6">
+                    <Typography variant="h6" color="primary">
                         Learn It Now
                     </Typography>
                     <Button variant="contained" color="primary" onClick={() => navigate('/')}>
