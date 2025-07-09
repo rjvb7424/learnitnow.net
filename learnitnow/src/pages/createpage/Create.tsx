@@ -8,6 +8,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import CustomAppBar from "../../components/CustomAppbar";
 import LessonCard from "./components/LessonCard";
 import type { Lesson } from "./LessonType";
+import Footer from "../../components/Footer";
 
 // Create page component
 // This page allows users to create a new course by providing details and adding lessons
@@ -198,7 +199,6 @@ const Create = () => {
                     size="large"
                     fullWidth
                     sx={{
-                        mb: 3,
                         borderRadius: 2,
                         fontWeight: "bold",
                     }}
@@ -213,6 +213,9 @@ const Create = () => {
                     Publish Course
                 </Button>
             </Container>
+
+            <Toolbar />
+            <Footer />
         </Box>
     );
 };

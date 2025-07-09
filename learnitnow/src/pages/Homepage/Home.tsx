@@ -2,6 +2,7 @@
 import { Box, Grid, Toolbar } from '@mui/material'
 import CourseCard from './components/CourseCard'
 import CustomAppBar from '../../components/CustomAppbar'
+import Footer from '../../components/Footer'
 
 function Home() {
   return (
@@ -10,7 +11,7 @@ function Home() {
       <Toolbar />
 
       {/* Grid Container */}
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3,  }}>
         <Grid 
           container 
           spacing={3} 
@@ -27,6 +28,9 @@ function Home() {
           ))}
         </Grid>
       </Box>
+      
+      <Toolbar />
+      <Footer />
     </Box>
   )
 }
