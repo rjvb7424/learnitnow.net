@@ -1,12 +1,13 @@
 // external dependencies
-import { useState, useRef } from "react";
-import { Typography, Box, TextField, Button, MenuItem, Paper, Container, Toolbar, Menu, } from "@mui/material";
+import { useState, } from "react";
+import { Typography, Box, Button, MenuItem, Paper, Container, Toolbar, Menu, } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 // internal dependencies
 import CustomAppBar from "../../components/CustomAppbar";
 import LessonCard from "./components/LessonCard";
+import CourseDetailsForm from "./components/CourseDetailsForm";
 import type { Lesson } from "./LessonType";
 import Footer from "../../components/Footer";
 
@@ -16,17 +17,8 @@ const Create = () => {
     // State for course details
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    // State for course thumbnail, it will be used to display the course thumbnail
+    // State for course thumbnail
     const [thumbnail, setThumbnail] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    // function to handle thumbnail upload
-    const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => setThumbnail(reader.result as string);
-            reader.readAsDataURL(file);
-        }};
     // State list for lessons
     const [lessons, setLessons] = useState<Lesson[]>([]);
     // State for placeholder index (used for drag-and-drop functionality), 
@@ -103,74 +95,14 @@ const Create = () => {
                         Share your knowledge and expertise with the world.
                     </Typography>
                 </Box>
-                {/* Course Details */}
-                <Paper elevation={3} sx={{ p: 2, borderRadius: 2, mb: 3 }}>
-                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
-                        Course Details
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
-                        Provide essential information about your course.
-                    </Typography>
-                    {/* Box for course thumbnail upload */}
-                    <Box
-                        sx={{
-                            position: "relative",
-                            maxWidth: "50%",
-                            border: "2px dashed #ccc",
-                            borderRadius: 2,
-                            overflow: "hidden",
-                            mx: "auto",
-                            mb: 3,
-                            cursor: "pointer",
-                            aspectRatio: "16 / 9",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            backgroundImage: thumbnail
-                                ? `url(${thumbnail})`
-                                : "url('https://via.placeholder.com/600x400?text=Upload+Thumbnail')",}}
-                        onClick={() => fileInputRef.current?.click()}>
-                        {/* Overlay text */}
-                        {!thumbnail && (
-                            <Typography
-                                sx={{
-                                    position: "absolute",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    color: "#999",
-                                }}>
-                                Click to upload your thumbnail.
-                            </Typography>
-                        )}
-                    </Box>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        ref={fileInputRef}
-                        onChange={handleThumbnailUpload}
-                    />
-                    {/* Text fields for course title */}
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        label="Course Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value.slice(0, 50))}
-                        helperText={`${title.length}/50 characters`}
-                        sx={{ mb: 2 }}/>
-                    {/* Text fields for course description */}
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Course Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value.slice(0, 200))}
-                        helperText={`${description.length}/200 characters`}/>
-                </Paper>
-
+                {/* Input for the basic course information */}
+                <CourseDetailsForm
+                    title={title}
+                    setTitle={setTitle}
+                    description={description}
+                    setDescription={setDescription}
+                    thumbnail={thumbnail}
+                    setThumbnail={setThumbnail}/>
                 {/* Lessons */}
                 <Paper elevation={3} sx={{ p: 2, borderRadius: 2, mb: 3 }}>
                     <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
