@@ -39,7 +39,8 @@ type LessonCardProps = {
 // LessonCard component
 // Displays a single lesson card with drag-and-drop functionality
 // Allows reordering lessons, editing title and content, and deleting lessons
-const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChange,  placeholderIndex, setPlaceholderIndex, }: LessonCardProps) => {
+const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChange,  
+    placeholderIndex, setPlaceholderIndex, }: LessonCardProps) => {
     // State to manage removing animation
     const [isRemoving, setIsRemoving] = useState(false);
     // Ref to the Paper component for drag-and-drop
@@ -98,43 +99,46 @@ const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChang
         }, [drag]
     );
 
-
     return (
         <Box>
+            {/* Paper component for the lesson card */}
             <Paper
                 ref={paperRef}
                 sx={{
                     p: 2,
                     mb: 2,
                     backgroundColor: isDragging ? "#e0e0e0" : "#f9f9f9",
-                    border:
-                        placeholderIndex === index
-                            ? "2px dashed #1976d2"
-                            : "1px solid transparent",
+                    border: placeholderIndex === index ? "2px dashed" : "1px solid transparent",
+                    borderColor: placeholderIndex === index ? "primary.main" : "transparent",
                     opacity: isRemoving ? 0 : isDragging ? 0.5 : 1,
                     transform: isRemoving ? "scale(0.95)" : "scale(1)",
                     transition: "all 0.3s ease",
                     borderRadius: 1,
                     display: "flex",
                     flexDirection: "column",
-                }}
-            >
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <div ref={setDragRef} style={{ display: "flex", alignItems: "center" }}>
-                        <IconButton sx={{ cursor: "grab", mr: 1 }}>
-                            <DragIndicator />
+                }}>
+                    {/* LessonCard header */}
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                        <div
+                            ref={setDragRef}
+                            style={{ display: "flex", alignItems: "center", marginRight: 1 }}>
+                            <IconButton sx={{ cursor: "grab" }}>
+                                <DragIndicator />
+                            </IconButton>
+                        </div>
+                        <Typography variant="subtitle1" sx={{ flexGrow: 1, display: "flex", gap: 1 }}>
+                            <Box component="span" sx={{ fontWeight: "bold" }}>
+                                Lesson {index + 1}:
+                            </Box>
+                            <Box component="span">{lesson.type}</Box>
+                        </Typography>
+                        <IconButton onClick={handleDelete} color="error">
+                            <Delete />
                         </IconButton>
-                    </div>
-                    <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-                        Lesson {index + 1}: {lesson.type}
-                    </Typography>
-                    <IconButton onClick={handleDelete}>
-                        <Delete />
-                    </IconButton>
-                </Box>
+                    </Box>
 
-
-                <TextField
+                {/* Text fields for lesson title */}
+                <TextField 
                     variant="outlined"
                     fullWidth
                     label="Lesson Title"
@@ -144,11 +148,10 @@ const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChang
                             lesson.id,
                             "title",
                             e.target.value.slice(0, 50)
-                        )
-                    }
+                        )}
                     helperText={`${lesson.title.length}/50 characters`}
-                    sx={{ mb: 2 }}
-                />
+                    sx={{ mb: 2 }}/>
+                {/* Text fields for lesson content */}
                 <TextField
                     variant="outlined"
                     fullWidth
@@ -161,10 +164,8 @@ const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChang
                             lesson.id,
                             "content",
                             e.target.value.slice(0, 500)
-                        )
-                    }
-                    helperText={`${lesson.content.length}/500 characters`}
-                />
+                        )}
+                    helperText={`${lesson.content.length}/500 characters`}/>
             </Paper>
         </Box>
     );
