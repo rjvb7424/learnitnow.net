@@ -1,5 +1,5 @@
 // external dependencies
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Typography, Box, TextField, Button, MenuItem, Paper, Container, Toolbar, Menu, } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -16,6 +16,17 @@ const Create = () => {
     // State for course details
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    // State for course thumbnail, it will be used to display the course thumbnail
+    const [thumbnail, setThumbnail] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    // function to handle thumbnail upload
+    const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => setThumbnail(reader.result as string);
+            reader.readAsDataURL(file);
+        }};
     // State list for lessons
     const [lessons, setLessons] = useState<Lesson[]>([]);
     // State for placeholder index (used for drag-and-drop functionality), 
@@ -100,6 +111,45 @@ const Create = () => {
                     <Typography variant="body2" sx={{ mb: 2 }}>
                         Provide essential information about your course.
                     </Typography>
+                    {/* Box for course thumbnail upload */}
+                    <Box
+                        sx={{
+                            position: "relative",
+                            maxWidth: "50%",
+                            border: "2px dashed #ccc",
+                            borderRadius: 2,
+                            overflow: "hidden",
+                            mx: "auto",
+                            mb: 3,
+                            cursor: "pointer",
+                            aspectRatio: "16 / 9",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: thumbnail
+                                ? `url(${thumbnail})`
+                                : "url('https://via.placeholder.com/600x400?text=Upload+Thumbnail')",}}
+                        onClick={() => fileInputRef.current?.click()}>
+                        {/* Overlay text */}
+                        {!thumbnail && (
+                            <Typography
+                                sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    color: "#999",
+                                }}>
+                                Click to upload your thumbnail.
+                            </Typography>
+                        )}
+                    </Box>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        ref={fileInputRef}
+                        onChange={handleThumbnailUpload}
+                    />
                     {/* Text fields for course title */}
                     <TextField
                         variant="outlined"

@@ -10,7 +10,12 @@ function CourseCard() {
         <Card sx={{ maxWidth: 345, borderRadius: 2, }}>
 
             {/* Course Thumbnail */}
-            <CardMedia sx={{ height: 180 }} image="https://via.placeholder.com/600x400"/>
+            <CardMedia
+                image="https://via.placeholder.com/600x400"
+                sx={{
+                    // Aspect ratio for the thumbnail
+                    aspectRatio: "16 / 9",
+                }}/>
 
             <CardContent sx={{ p: 2 }}>
                 {/* Category Tag and Rating */}
