@@ -1,12 +1,8 @@
-// external dependencies
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback }from "react";
 import { Typography, Box, TextField, Paper, IconButton } from "@mui/material";
 import { useDrag, useDrop } from "react-dnd";
-
-// icon dependencies
 import { Delete, DragIndicator } from "@mui/icons-material";
 
-// Types
 type Lesson = {
     id: string;
     type: "Paragraph" | "Quiz";
@@ -38,6 +34,7 @@ const LessonCard = ({
     setPlaceholderIndex,
 }: LessonCardProps) => {
     const [isRemoving, setIsRemoving] = useState(false);
+    const paperRef = useRef<HTMLDivElement>(null);
 
     const [{ isDragging }, drag, dragPreview] = useDrag({
         type: "lesson",
@@ -45,35 +42,69 @@ const LessonCard = ({
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
-    });
-
-    const [, drop] = useDrop({
-        accept: "lesson",
-        hover({ index: dragIndex }: { index: number }, monitor) {
-            if (monitor.isOver({ shallow: true }) && dragIndex !== index) {
-                setPlaceholderIndex(index);
-            }
-        },
-        drop({ index: dragIndex }: { index: number }) {
-            if (dragIndex !== index) moveLesson(dragIndex, index);
+        end: () => {
+            // Clear placeholder on drag end
             setPlaceholderIndex(null);
         },
     });
+
+    const [{ isOver }, drop] = useDrop({
+        accept: "lesson",
+        collect: (monitor) => ({
+            isOver: monitor.isOver(),
+        }),
+        hover: ({ index: dragIndex }: { index: number }) => {
+            if (dragIndex !== index && placeholderIndex !== index) {
+                setPlaceholderIndex(index);
+            }
+        },
+        drop: ({ index: dragIndex }: { index: number }) => {
+            if (dragIndex !== index) {
+                moveLesson(dragIndex, index);
+            }
+            setPlaceholderIndex(null);
+        },
+    });
+
+    // Combine refs: drag + drop + Paper
+    useEffect(() => {
+        if (paperRef.current) {
+            dragPreview(drop(paperRef.current));
+        }
+    }, [dragPreview, drop]);
+
+    // Clear placeholder if we exit drop zone
+    useEffect(() => {
+        if (!isOver) {
+            setPlaceholderIndex(null);
+        }
+    }, [isOver, setPlaceholderIndex]);
 
     const handleDelete = () => {
         setIsRemoving(true);
         setTimeout(() => deleteLesson(lesson.id), 300);
     };
 
+    const setDragRef = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (node) drag(node);
+        },
+        [drag]
+    );
+
+
     return (
         <Box>
             <Paper
-                ref={(node) => dragPreview(drop(node))}
+                ref={paperRef}
                 sx={{
                     p: 2,
                     mb: 2,
                     backgroundColor: isDragging ? "#e0e0e0" : "#f9f9f9",
-                    border: placeholderIndex === index ? "2px dashed #1976d2" : "none",
+                    border:
+                        placeholderIndex === index
+                            ? "2px dashed #1976d2"
+                            : "1px solid transparent",
                     opacity: isRemoving ? 0 : isDragging ? 0.5 : 1,
                     transform: isRemoving ? "scale(0.95)" : "scale(1)",
                     transition: "all 0.3s ease",
@@ -83,18 +114,19 @@ const LessonCard = ({
                 }}
             >
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <IconButton ref={drag} sx={{ cursor: "grab", mr: 1 }}>
-                        <DragIndicator />
-                    </IconButton>
-
+                    <div ref={setDragRef} style={{ display: "flex", alignItems: "center" }}>
+                        <IconButton sx={{ cursor: "grab", mr: 1 }}>
+                            <DragIndicator />
+                        </IconButton>
+                    </div>
                     <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
                         Lesson {index + 1}: {lesson.type}
                     </Typography>
-
                     <IconButton onClick={handleDelete}>
                         <Delete />
                     </IconButton>
                 </Box>
+
 
                 <TextField
                     variant="outlined"
@@ -102,7 +134,11 @@ const LessonCard = ({
                     label="Lesson Title"
                     value={lesson.title}
                     onChange={(e) =>
-                        handleLessonChange(lesson.id, "title", e.target.value.slice(0, 50))
+                        handleLessonChange(
+                            lesson.id,
+                            "title",
+                            e.target.value.slice(0, 50)
+                        )
                     }
                     helperText={`${lesson.title.length}/50 characters`}
                     sx={{ mb: 2 }}
@@ -115,7 +151,11 @@ const LessonCard = ({
                     label="Lesson Content"
                     value={lesson.content}
                     onChange={(e) =>
-                        handleLessonChange(lesson.id, "content", e.target.value.slice(0, 500))
+                        handleLessonChange(
+                            lesson.id,
+                            "content",
+                            e.target.value.slice(0, 500)
+                        )
                     }
                     helperText={`${lesson.content.length}/500 characters`}
                 />
