@@ -1,8 +1,12 @@
+// external dependencies
 import { useState, useRef, useEffect, useCallback }from "react";
 import { Typography, Box, TextField, Paper, IconButton } from "@mui/material";
 import { useDrag, useDrop } from "react-dnd";
+
+// icon dependencies
 import { Delete, DragIndicator } from "@mui/icons-material";
 
+// lesson type definition
 type Lesson = {
     id: string;
     type: "Paragraph" | "Quiz";
@@ -10,16 +14,23 @@ type Lesson = {
     content: string;
 };
 
+// props type definition for LessonCard component
 type LessonCardProps = {
     lesson: Lesson;
+    // index of the lesson in the list
     index: number;
+    // function to move lesson from one index to another
     moveLesson: (dragIndex: number, hoverIndex: number) => void;
     deleteLesson: (id: string) => void;
+    // function to handle changes in lesson fields
     handleLessonChange: (
+        // id of the lesson to change
         id: string,
-        field: keyof Omit<Lesson, "id" | "type">,
+        // field to change: "title" or "content"
+        field: "title" | "content",
         value: string
     ) => void;
+    
     placeholderIndex: number | null;
     setPlaceholderIndex: (index: number | null) => void;
 };
