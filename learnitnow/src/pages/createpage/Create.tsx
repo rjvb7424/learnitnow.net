@@ -1,16 +1,22 @@
 // external dependencies
 import { useState } from "react";
-import { Typography, Box, TextField, Button, MenuItem, Paper, Container, Toolbar, IconButton, } from "@mui/material";
-import { DndProvider, useDrag, useDrop, } from "react-dnd";
+import {
+    Typography,
+    Box,
+    TextField,
+    Button,
+    MenuItem,
+    Paper,
+    Container,
+    Toolbar,
+} from "@mui/material";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 // internal dependencies
 import CustomAppBar from "../../components/CustomAppbar";
+import LessonCard from "./components/LessonCard";
 
-// icon dependencies
-import { Delete, DragIndicator } from "@mui/icons-material";
-
-// Define the Lesson type
 type Lesson = {
     id: string;
     type: "Paragraph" | "Quiz";
@@ -18,135 +24,7 @@ type Lesson = {
     content: string;
 };
 
-// Each lesson is represented by a LessonCard component
-const LessonCard = ({
-    lesson,
-    index,
-    moveLesson,
-    deleteLesson,
-    handleLessonChange,
-    placeholderIndex,
-    setPlaceholderIndex,
-}: {
-    lesson: Lesson;
-    index: number;
-    moveLesson: (dragIndex: number, hoverIndex: number) => void;
-    deleteLesson: (id: string) => void;
-    handleLessonChange: (
-        id: string,
-        field: keyof Omit<Lesson, "id" | "type">,
-        value: string
-    ) => void;
-    placeholderIndex: number | null;
-    setPlaceholderIndex: (index: number | null) => void;
-}) => {
-    const [isRemoving, setIsRemoving] = useState(false);
-
-    const [{ isDragging }, drag, dragPreview] = useDrag({
-        type: "lesson",
-        item: { index },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    });
-
-    const [, drop] = useDrop({
-        accept: "lesson",
-        hover(item: { index: number }, monitor) {
-            if (!monitor.isOver({ shallow: true })) {
-                setPlaceholderIndex(null);
-                return;
-            }
-            if (item.index !== index) {
-                setPlaceholderIndex(index);
-            }
-        },
-        drop(item: { index: number }) {
-            if (item.index !== index) {
-                moveLesson(item.index, index);
-            }
-            setPlaceholderIndex(null);
-        },
-    });
-
-    const handleDelete = () => {
-        setIsRemoving(true);
-        setTimeout(() => deleteLesson(lesson.id), 300);
-    };
-
-    return (
-        <Box>
-            <Paper
-                ref={(node) => dragPreview(drop(node))}
-                sx={{
-                    p: 2,
-                    mb: 2,
-                    backgroundColor: isDragging ? "#e0e0e0" : "#f9f9f9",
-                    border: placeholderIndex === index ? "2px dashed #1976d2" : "none",
-                    opacity: isRemoving ? 0 : isDragging ? 0.5 : 1,
-                    transform: isRemoving ? "scale(0.95)" : "scale(1)",
-                    transition: "all 0.3s ease",
-                    borderRadius: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-            >
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    {/* Drag Handle */}
-                    <IconButton
-                        ref={drag}
-                        sx={{ cursor: "grab", mr: 1 }}
-                    >
-                        <DragIndicator />
-                    </IconButton>
-
-                    <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-                        Lesson {index + 1}: {lesson.type}
-                    </Typography>
-
-                    <IconButton onClick={handleDelete}>
-                        <Delete />
-                    </IconButton>
-                </Box>
-
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    label="Lesson Title"
-                    value={lesson.title}
-                    onChange={(e) =>
-                        handleLessonChange(
-                            lesson.id,
-                            "title",
-                            e.target.value.slice(0, 50)
-                        )
-                    }
-                    helperText={`${lesson.title.length}/50 characters`}
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    multiline
-                    rows={4}
-                    label="Lesson Content"
-                    value={lesson.content}
-                    onChange={(e) =>
-                        handleLessonChange(
-                            lesson.id,
-                            "content",
-                            e.target.value.slice(0, 500)
-                        )
-                    }
-                    helperText={`${lesson.content.length}/500 characters`}
-                />
-            </Paper>
-        </Box>
-    );
-};
-
-
-function Create() {
+const Create = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -160,11 +38,11 @@ function Create() {
             title: "",
             content: "",
         };
-        setLessons([...lessons, newLesson]);
+        setLessons((prev) => [...prev, newLesson]);
     };
 
     const handleDeleteLesson = (id: string) => {
-        setLessons(lessons.filter((lesson) => lesson.id !== id));
+        setLessons((prev) => prev.filter((lesson) => lesson.id !== id));
     };
 
     const handleLessonChange = (
@@ -172,8 +50,8 @@ function Create() {
         field: keyof Omit<Lesson, "id" | "type">,
         value: string
     ) => {
-        setLessons(
-            lessons.map((lesson) =>
+        setLessons((prev) =>
+            prev.map((lesson) =>
                 lesson.id === id ? { ...lesson, [field]: value } : lesson
             )
         );
@@ -181,22 +59,25 @@ function Create() {
 
     const moveLesson = (dragIndex: number, hoverIndex: number) => {
         const updatedLessons = [...lessons];
-        const [removed] = updatedLessons.splice(dragIndex, 1);
-        updatedLessons.splice(hoverIndex, 0, removed);
+        const [movedLesson] = updatedLessons.splice(dragIndex, 1);
+        updatedLessons.splice(hoverIndex, 0, movedLesson);
         setLessons(updatedLessons);
     };
+
+    const isPublishDisabled =
+        title.trim() === "" || description.trim() === "" || lessons.length < 1;
 
     return (
         <Box>
             <CustomAppBar />
             <Toolbar />
             <Container>
-                <Box>
+                <Box mb={3}>
                     <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
                         Create Your Course!
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                        Share your knowledge and expertise with the world. Start building your course now!
+                    <Typography variant="subtitle1">
+                        Share your knowledge and expertise with the world.
                     </Typography>
                 </Box>
 
@@ -206,8 +87,9 @@ function Create() {
                         Course Details
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>
-                        Provide the essential information about your course.
+                        Provide essential information about your course.
                     </Typography>
+
                     <TextField
                         variant="outlined"
                         fullWidth
@@ -237,7 +119,7 @@ function Create() {
                         Lessons
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>
-                        Build your course by adding lessons. Drag and drop to reorder them.
+                        Build your course by adding lessons. Drag and drop to reorder.
                     </Typography>
 
                     {lessons.length === 0 && (
@@ -250,7 +132,7 @@ function Create() {
                                 mb: 2,
                             }}
                         >
-                            Your course has no lessons yet. Start by adding your first lesson.
+                            No lessons yet. Start by adding your first lesson.
                         </Box>
                     )}
 
@@ -287,6 +169,7 @@ function Create() {
                         </Button>
                     </Box>
                 </Paper>
+
                 <Button
                     variant="contained"
                     color="primary"
@@ -294,27 +177,26 @@ function Create() {
                     fullWidth
                     sx={{
                         mt: 3,
-                        mb: 5, // add bottom margin so it’s not glued to the screen edge
+                        mb: 5,
                         borderRadius: 2,
                         textTransform: "none",
                         fontSize: "1.1rem",
                         fontWeight: "bold",
                     }}
+                    disabled={isPublishDisabled}
                     onClick={() => {
-                        // TODO: Replace this with your publish logic
                         console.log("Publishing course:", {
                             title,
                             description,
                             lessons,
                         });
                     }}
-                    disabled={title.trim() === "" || description.trim() === "" || lessons.length < 1}
                 >
                     🚀 Publish Course
                 </Button>
             </Container>
         </Box>
     );
-}
+};
 
 export default Create;
