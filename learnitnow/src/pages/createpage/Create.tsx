@@ -1,28 +1,13 @@
 // external dependencies
 import { useState } from "react";
-import {
-    Typography,
-    Box,
-    TextField,
-    Button,
-    MenuItem,
-    Paper,
-    Container,
-    Toolbar,
-} from "@mui/material";
+import { Typography, Box, TextField, Button, MenuItem, Paper, Container, Toolbar, } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 // internal dependencies
 import CustomAppBar from "../../components/CustomAppbar";
 import LessonCard from "./components/LessonCard";
-
-type Lesson = {
-    id: string;
-    type: "Paragraph" | "Quiz";
-    title: string;
-    content: string;
-};
+import type { Lesson } from "./LessonType";
 
 const Create = () => {
     const [title, setTitle] = useState("");

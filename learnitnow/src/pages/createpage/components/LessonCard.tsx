@@ -6,13 +6,8 @@ import { useDrag, useDrop } from "react-dnd";
 // icon dependencies
 import { Delete, DragIndicator } from "@mui/icons-material";
 
-// lesson type definition
-type Lesson = {
-    id: string;
-    type: "Paragraph" | "Quiz";
-    title: string;
-    content: string;
-};
+// internal dependencies
+import type { Lesson } from "../LessonType";
 
 // props type definition for LessonCard component
 type LessonCardProps = {
@@ -136,7 +131,6 @@ const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChang
                             <Delete />
                         </IconButton>
                     </Box>
-
                 {/* Text fields for lesson title */}
                 <TextField 
                     variant="outlined"

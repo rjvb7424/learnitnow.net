@@ -5,7 +5,7 @@ function CustomAppBar() {
     const navigate = useNavigate();
 
     return (
-        <AppBar sx={{ backgroundColor: "transparent", boxShadow: "none" }}>
+        <AppBar position="absolute" sx={{ backgroundColor: "transparent", boxShadow: "none" }}>
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                 
                 {/* Left side */}
