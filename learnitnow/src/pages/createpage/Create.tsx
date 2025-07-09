@@ -187,9 +187,6 @@ const Create = () => {
                             <MenuItem onClick={() => handleLessonTypeSelect("Paragraph")}>
                                 Paragraph
                             </MenuItem>
-                            <MenuItem onClick={() => handleLessonTypeSelect("Quiz")}>
-                                Quiz
-                            </MenuItem>
                         </Menu>
                     </Box>
                 </Paper>
@@ -213,7 +210,6 @@ const Create = () => {
                     Publish Course
                 </Button>
             </Container>
-
             <Toolbar />
             <Footer />
         </Box>

@@ -1,8 +1,11 @@
+// external dependencies
 import { Box, Typography, IconButton } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
+// Footer component
+// This component displays the footer of the application with social media links and copyright information
 const Footer = () => {
     return (
         <Box
@@ -15,8 +18,7 @@ const Footer = () => {
                 py: 2,
                 borderTop: "1px solid #ddd",
                 gap: 1,
-            }}
-        >
+            }}>
             {/* Logo and App Name */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>

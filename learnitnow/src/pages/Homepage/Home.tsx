@@ -28,7 +28,7 @@ function Home() {
           ))}
         </Grid>
       </Box>
-      
+  
       <Toolbar />
       <Footer />
     </Box>
