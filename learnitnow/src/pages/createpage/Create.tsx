@@ -1,6 +1,5 @@
-// external dependencies
 import { useState } from "react";
-import { Typography, Box, TextField, Button, MenuItem, Paper, Container, Toolbar, } from "@mui/material";
+import { Typography, Box, TextField, Button, MenuItem, Paper, Container, Toolbar, Menu, } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -13,17 +12,29 @@ const Create = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [lessons, setLessons] = useState<Lesson[]>([]);
-    const [newLessonType, setNewLessonType] = useState<Lesson["type"]>("Paragraph");
     const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
 
-    const handleAddLesson = () => {
+    // State for dropdown menu
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const isMenuOpen = Boolean(anchorEl);
+
+    const handleAddLessonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleLessonTypeSelect = (type: Lesson["type"]) => {
         const newLesson: Lesson = {
             id: `lesson-${Date.now()}`,
-            type: newLessonType,
+            type: type,
             title: "",
             content: "",
         };
         setLessons((prev) => [...prev, newLesson]);
+        setAnchorEl(null); // Close the menu
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
     };
 
     const handleDeleteLesson = (id: string) => {
@@ -101,7 +112,7 @@ const Create = () => {
                 {/* Lessons */}
                 <Paper elevation={3} sx={{ p: 2, borderRadius: 2, mb: 3 }}>
                     <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
-                        Lessons
+                        Course Curriculum
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>
                         Build your course by adding lessons. Drag and drop to reorder.
@@ -117,7 +128,7 @@ const Create = () => {
                                 mb: 2,
                             }}
                         >
-                            No lessons yet. Start by adding your first lesson.
+                            No lessons yet. Start by adding your first lesson!
                         </Box>
                     )}
 
@@ -137,21 +148,24 @@ const Create = () => {
                     </DndProvider>
 
                     <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-                        <TextField
-                            select
-                            label="Lesson Type"
-                            value={newLessonType}
-                            onChange={(e) =>
-                                setNewLessonType(e.target.value as Lesson["type"])
-                            }
-                            sx={{ width: 200 }}
+                        <Button
+                            variant="contained"
+                            onClick={handleAddLessonClick}
                         >
-                            <MenuItem value="Paragraph">Paragraph</MenuItem>
-                            <MenuItem value="Quiz">Quiz</MenuItem>
-                        </TextField>
-                        <Button variant="contained" onClick={handleAddLesson}>
                             ➕ Add Lesson
                         </Button>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={isMenuOpen}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={() => handleLessonTypeSelect("Paragraph")}>
+                                Paragraph
+                            </MenuItem>
+                            <MenuItem onClick={() => handleLessonTypeSelect("Quiz")}>
+                                Quiz
+                            </MenuItem>
+                        </Menu>
                     </Box>
                 </Paper>
 
@@ -177,7 +191,7 @@ const Create = () => {
                         });
                     }}
                 >
-                    🚀 Publish Course
+                    Publish Course
                 </Button>
             </Container>
         </Box>
