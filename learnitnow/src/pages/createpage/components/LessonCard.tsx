@@ -29,78 +29,73 @@ type LessonCardProps = {
         // field to change: "title" or "content"
         field: "title" | "content",
         value: string
+    // for now the function does not return anything but could return placeholdeIndex
     ) => void;
-    
+    // placeholder index indicates where the lesson is being dragged to
     placeholderIndex: number | null;
     setPlaceholderIndex: (index: number | null) => void;
 };
 
-const LessonCard = ({
-    lesson,
-    index,
-    moveLesson,
-    deleteLesson,
-    handleLessonChange,
-    placeholderIndex,
-    setPlaceholderIndex,
-}: LessonCardProps) => {
+// LessonCard component
+// Displays a single lesson card with drag-and-drop functionality
+// Allows reordering lessons, editing title and content, and deleting lessons
+const LessonCard = ({ lesson, index, moveLesson, deleteLesson, handleLessonChange,  placeholderIndex, setPlaceholderIndex, }: LessonCardProps) => {
+    // State to manage removing animation
     const [isRemoving, setIsRemoving] = useState(false);
+    // Ref to the Paper component for drag-and-drop
     const paperRef = useRef<HTMLDivElement>(null);
 
+    // useDrag hook to make the component draggable
     const [{ isDragging }, drag, dragPreview] = useDrag({
         type: "lesson",
         item: { index },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
+        collect: (monitor) => ({ isDragging: monitor.isDragging(), }),
         end: () => {
             // Clear placeholder on drag end
             setPlaceholderIndex(null);
         },
     });
 
+    // useDrop hook to make the component a drop target
     const [{ isOver }, drop] = useDrop({
         accept: "lesson",
-        collect: (monitor) => ({
-            isOver: monitor.isOver(),
-        }),
+        collect: (monitor) => ({ isOver: monitor.isOver(), }),
         hover: ({ index: dragIndex }: { index: number }) => {
+            // If the item is being dragged over itself, do nothing
             if (dragIndex !== index && placeholderIndex !== index) {
                 setPlaceholderIndex(index);
             }
         },
         drop: ({ index: dragIndex }: { index: number }) => {
-            if (dragIndex !== index) {
-                moveLesson(dragIndex, index);
-            }
+            // If the item is dropped on a different index, move it
+            if (dragIndex !== index) { moveLesson(dragIndex, index); }
+            // Clear placeholder index after drop
             setPlaceholderIndex(null);
         },
     });
 
     // Combine refs: drag + drop + Paper
     useEffect(() => {
-        if (paperRef.current) {
-            dragPreview(drop(paperRef.current));
-        }
+        if (paperRef.current) { dragPreview(drop(paperRef.current));}
     }, [dragPreview, drop]);
 
     // Clear placeholder if we exit drop zone
     useEffect(() => {
-        if (!isOver) {
-            setPlaceholderIndex(null);
-        }
+        if (!isOver) { setPlaceholderIndex(null); }
     }, [isOver, setPlaceholderIndex]);
 
+    // Handle delete action with a delay for animation
     const handleDelete = () => {
         setIsRemoving(true);
         setTimeout(() => deleteLesson(lesson.id), 300);
     };
 
+    // Set the drag ref to the Paper component
     const setDragRef = useCallback(
         (node: HTMLDivElement | null) => {
+            // If node is not null, set it as the drag target
             if (node) drag(node);
-        },
-        [drag]
+        }, [drag]
     );
 
 
