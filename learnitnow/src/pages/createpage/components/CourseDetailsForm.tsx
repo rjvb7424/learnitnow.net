@@ -33,9 +33,16 @@ const CourseDetailsForm: React.FC<CourseDetailsFormProps> = ({ title, setTitle, 
 
     // Function to handle price input changes
     const handlePriceChange = (value: string | undefined) => {
-        // If value is empty or undefined, set price to null.
-        // Otherwise, convert the value to a number.
-        setPrice(value === undefined || value === "" ? null : Number(value));
+        // IMPORTANT CHANGE HERE:
+        // If the value from CurrencyInput is undefined or an empty string,
+        // it means the input is empty or has been fully deleted.
+        // In this case, set the price to null in your state.
+        // Otherwise, parse the value to a number.
+        if (value === undefined || value === "") {
+            setPrice(null);
+        } else {
+            setPrice(Number(value));
+        }
     };
 
   return (
@@ -93,6 +100,10 @@ const CourseDetailsForm: React.FC<CourseDetailsFormProps> = ({ title, setTitle, 
                     </Typography>
                     <CurrencyInput
                         placeholder="Enter course price"
+                        // CRITICAL CHANGE HERE:
+                        // If 'price' is null in your state, pass 'undefined' to CurrencyInput.
+                        // CurrencyInput treats 'undefined' as an empty input.
+                        // Otherwise, pass the number directly.
                         value={price === null ? undefined : price}
                         prefix="$"
                         onValueChange={handlePriceChange}
